@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#00c800</color>
+    <color name="colorPrimaryDark">#02bb02</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="actionBarColor">#00c800</color>
+    <color name="textColorDark">#56524c</color>
+    <color name="textColorMenuDark">#908d86</color>
+    <color name="colorStribe">#fca720</color>
+    <color name="white">#fbfaf9</color>
+
+
+</resources>

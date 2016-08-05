@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">TestBusApp</string>
+
+    <string name="arrival">ARRIVAL</string>
+    <string name="departure">DEPARTURE</string>
+</resources>
