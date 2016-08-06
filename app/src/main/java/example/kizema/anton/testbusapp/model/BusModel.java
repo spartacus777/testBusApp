@@ -46,7 +46,8 @@ public class BusModel extends Model {
     }
 
     public static List<BusModel> selectByArrivals(boolean isArrivals){
-        return new Select().from(BusModel.class).where(ARRIVALS + " = ?", isArrivals).execute();
+        return new Select().from(BusModel.class).where(ARRIVALS + " = ?", isArrivals)
+                .orderBy(BusModel.TIMESTAMP + " ASC").execute();
     }
 
     public static BusModel create(String id,

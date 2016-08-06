@@ -1,0 +1,99 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:background="@color/titleBack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="18dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="Route"
+        android:textColor="@color/textColorMenuDark" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/titleBack"
+        android:orientation="horizontal"
+        android:paddingBottom="12dp"
+        android:paddingTop="12dp">
+
+        <TextView
+            android:id="@+id/tvTitleId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:gravity="center"
+            android:text="Route"
+            android:textColor="@color/textColorMenuDark" />
+
+        <TextView
+            android:id="@+id/tvTitleDirection"
+            android:layout_width="0dp"
+            android:text="Direction"
+            android:layout_height="wrap_content"
+            android:layout_weight="160"
+            android:gravity="center_vertical"
+            android:textColor="@color/textColorMenuDark" />
+
+        <TextView
+            android:id="@+id/tvTitleDeparture"
+            android:layout_width="0dp"
+            android:text="Departure"
+            android:layout_height="wrap_content"
+            android:layout_weight="55"
+            android:gravity="center"
+            android:textColor="@color/textColorMenuDark" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/parentItem"
+        android:orientation="horizontal"
+        android:paddingBottom="12dp"
+        android:paddingTop="12dp">
+
+        <TextView
+            android:id="@+id/tvId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="50"
+            android:gravity="center"
+            android:textColor="@color/textColorDark" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingRight="6dp"
+            android:text="to"
+            android:textColor="@color/textColorLightDark" />
+
+        <TextView
+            android:id="@+id/tvDirection"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="160"
+            android:gravity="center_vertical"
+            android:textColor="@color/textColorDark" />
+
+        <TextView
+            android:id="@+id/tvDeparture"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="55"
+            android:gravity="center"
+            android:textColor="@color/textColorDark" />
+
+    </LinearLayout>
+
+</LinearLayout>

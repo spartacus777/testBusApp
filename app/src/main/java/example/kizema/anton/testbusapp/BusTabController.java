@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import example.kizema.anton.testbusapp.adapters.BusRouteAdapter;
@@ -74,12 +75,19 @@ public class BusTabController {
             case ARRIVALS:
                 busModels = BusModel.selectByArrivals(true);
                 break;
-            default:
+            case DEPARTURES:
                 busModels = BusModel.selectByArrivals(false);
+                break;
+            default:
+                busModels = new ArrayList<>();
                 break;
         }
 
         return busModels;
+    }
+
+    public void setRefreshing() {
+        swipeLayout.setRefreshing(true);
     }
 
     public void update() {

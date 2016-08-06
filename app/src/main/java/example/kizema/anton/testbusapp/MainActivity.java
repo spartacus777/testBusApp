@@ -116,6 +116,10 @@ public class MainActivity extends BaseActivity implements BusTabController.OnBus
     @Override
     public void onFetchData() {
         Controller.getInstance().getBusses();
+
+        for (BusTabController f : appActivtyPagerAdapter.getAll()){
+            f.setRefreshing();
+        }
     }
 
     private class MyViewPagerAdapter extends PagerAdapter {
