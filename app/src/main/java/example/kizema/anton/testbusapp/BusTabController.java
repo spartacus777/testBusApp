@@ -3,43 +3,42 @@ package example.kizema.anton.testbusapp;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 
 import java.io.Serializable;
 import java.util.List;
 
-import example.kizema.anton.testbusapp.control.Controller;
+import example.kizema.anton.testbusapp.adapters.BusRouteAdapter;
 import example.kizema.anton.testbusapp.model.BusModel;
 
 public class BusTabController {
 
     protected static final String TAG = BusTabController.class.getSimpleName();
 
-    private OnPopularOrNearUserClick listener;
+    private OnBusTabCallback listener;
     private SwipeRefreshLayout swipeLayout;
     private RecyclerView rvEntries;
     private BusRouteAdapter busAdapter;
-    private ViewGroup noEntries;
 
     private Type type;
-    private boolean isFirstStarted;
 
-    public enum Type implements Serializable{
+    public enum Type implements Serializable {
         ARRIVALS, DEPARTURES
     }
 
-    public interface OnPopularOrNearUserClick {
+    public interface OnBusTabCallback {
         void onPopularOrNearUserClick(BusModel model);
+        void onFetchData();
     }
 
-    public BusTabController(Type type, boolean isFirstStarted, View parentView) {
+    public BusTabController(Type type, boolean isFirstStarted, View parentView, OnBusTabCallback listener) {
         this.type = type;
-        this.isFirstStarted = isFirstStarted;
+        this.listener = listener;
         initViews(parentView);
     }
 
-    private void initViews(View parentView){
+    private void initViews(View parentView) {
         swipeLayout = (SwipeRefreshLayout) parentView.findViewById(R.id.swipeContainer);
         swipeLayout.setColorSchemeColors(parentView.getResources().getColor(R.color.colorStribe),
                 parentView.getResources().getColor(R.color.textColorDark));
@@ -67,16 +66,11 @@ public class BusTabController {
         rvEntries.setAdapter(busAdapter);
         rvEntries.setHasFixedSize(true);
 
-        if (isFirstStarted) {
-            update();
-        }
-//        noPeopleNear = (ViewGroup) parentView.findViewById(R.id.noPeopleNear);
-//        noPeopleNear.setVisibility(View.GONE);
     }
 
-    private List<BusModel> getFromDb(){
+    private List<BusModel> getFromDb() {
         List<BusModel> busModels;
-        switch (type){
+        switch (type) {
             case ARRIVALS:
                 busModels = BusModel.selectByArrivals(true);
                 break;
@@ -88,18 +82,15 @@ public class BusTabController {
         return busModels;
     }
 
-    public void update(){
+    public void update() {
         swipeLayout.setRefreshing(true);
-        Controller.getInstance().getBusses();
+        listener.onFetchData();
     }
 
-    public void onUpdated(){
+    public void onUpdated() {
         busAdapter.update(getFromDb());
         swipeLayout.setRefreshing(false);
-    }
-
-    public void addListener(OnPopularOrNearUserClick listener){
-        this.listener = listener;
+        Log.v("rr", "getBusses() onUpdated");
     }
 
 }

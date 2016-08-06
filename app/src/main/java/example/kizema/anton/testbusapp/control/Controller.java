@@ -37,17 +37,21 @@ public class Controller {
                 new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {
-                        Log.d("rr", "exception :: " + e);
+                        Log.v("rr", "getBusses() exception " + e);
                     }
 
                     @Override
                     public void onResponse(Response response) throws IOException {
                         String body = response.body().string();
 
+                        Log.v("rr", "getBusses() onResponse " + body);
+
                         List<BusModel> busModels = JsonHelper.getInstance().parse(body);
-                        for (BusModel m : busModels){
+//                        for (BusModel m : busModels) {
 //                            Log.d("rr", "MODEL : " + m.string());
-                        }
+//                        }
+
+                        Log.v("rr", "getBusses() parse ready");
 
                         Intent intent = new Intent();
                         intent.setAction(FETCH_ACTION);

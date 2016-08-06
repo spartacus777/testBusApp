@@ -25,7 +25,8 @@
 
         <meta-data
             android:name="AA_MODELS"
-            android:value="${applicationId}.model.BusModel"/>
+            android:value="${applicationId}.model.BusModel,
+            ${applicationId}.model.RouteModel"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -39,8 +39,10 @@ public class BusModel extends Model {
 
 
     public static BusModel selectById(String id, boolean isArrivals){
-        return new Select().from(BusModel.class).where(LINE_CODE + " = ?", id)
-                .where(ARRIVALS + " = ?", isArrivals).executeSingle();
+        return new Select().from(BusModel.class)
+                .where(LINE_CODE + " = ?", id)
+                .where(ARRIVALS + " = ?", isArrivals)
+                .executeSingle();
     }
 
     public static List<BusModel> selectByArrivals(boolean isArrivals){

@@ -24,9 +24,10 @@ import java.util.List;
 import example.kizema.anton.testbusapp.app.BaseActivity;
 import example.kizema.anton.testbusapp.app.UIHelper;
 import example.kizema.anton.testbusapp.control.Controller;
+import example.kizema.anton.testbusapp.helpers.DetailsDialog;
 import example.kizema.anton.testbusapp.model.BusModel;
 
-public class MainActivity extends BaseActivity implements BusTabController.OnPopularOrNearUserClick {
+public class MainActivity extends BaseActivity implements BusTabController.OnBusTabCallback {
 
     private static final String TAB_ARRIVAL = "TAB_ARRIVAL";
     private static final String TAB_DEPARTURE = "TAB_DEPARTURE";
@@ -90,6 +91,10 @@ public class MainActivity extends BaseActivity implements BusTabController.OnPop
                 tabHost.setCurrentTab(position);
             }
         });
+
+        if (firstStarted) {
+            onFetchData();
+        }
     }
 
     private View createTab(int labelId, String tabId){
@@ -104,7 +109,13 @@ public class MainActivity extends BaseActivity implements BusTabController.OnPop
 
     @Override
     public void onPopularOrNearUserClick(BusModel model) {
+        DetailsDialog dlg = new DetailsDialog(MainActivity.this, model.lineId, model.isArrivals);
+        dlg.show();
+    }
 
+    @Override
+    public void onFetchData() {
+        Controller.getInstance().getBusses();
     }
 
     private class MyViewPagerAdapter extends PagerAdapter {
@@ -132,8 +143,8 @@ public class MainActivity extends BaseActivity implements BusTabController.OnPop
 
             View view = LayoutInflater.from(ctx).inflate(R.layout.fragment_list, collection, false);
             BusTabController bf = new BusTabController((position == 0 ? BusTabController.Type.ARRIVALS :
-                    BusTabController.Type.DEPARTURES), firstStarted, view);
-            bf.addListener(MainActivity.this);
+                    BusTabController.Type.DEPARTURES), firstStarted, view, MainActivity.this);
+
             busTabControllers.add(bf);
 
             collection.addView(view);

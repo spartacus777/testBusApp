@@ -1,4 +1,4 @@
-package example.kizema.anton.testbusapp;
+package example.kizema.anton.testbusapp.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import example.kizema.anton.testbusapp.R;
 import example.kizema.anton.testbusapp.model.BusModel;
 
 public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.BusViewHolder> {

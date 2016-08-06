@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import example.kizema.anton.testbusapp.model.BusModel;
+import example.kizema.anton.testbusapp.model.RouteModel;
 
 /**
  * Created by somename on 06.08.2016.
@@ -28,6 +29,7 @@ public class JsonHelper {
     public static final String TZ = "tz";
     public static final String ADDRESS = "address";
     public static final String NAME = "name";
+    public static final String ID = "id";
 
 
     public static synchronized JsonHelper getInstance(){
@@ -77,6 +79,11 @@ public class JsonHelper {
                 for (int j = 0; j < route.length(); ++j) {
                     String name = route.getJSONObject(j).getString(NAME);
                     String address = route.getJSONObject(j).getString(ADDRESS);
+                    String id = route.getJSONObject(j).getString(ID);
+
+                    RouteModel.create(id, lineCode, isArrival, name, address);
+
+//                    Log.d("rr", "route created : " + lineCode + " , " + isArrival + " , " + name + " , " + address);
                 }
 
                 BusModel model = BusModel.create(lineCode, isArrival, direction, timestamp, tz, through_the_stations);

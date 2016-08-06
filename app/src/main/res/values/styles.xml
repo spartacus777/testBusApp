@@ -10,4 +10,13 @@
         <item name="android:windowBackground">@color/white</item>
     </style>
 
+    <style name="OpacityDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowAnimationStyle">@style/OpacityDialognimation</item>
+    </style>
+
+    <style name="OpacityDialognimation">
+        <item name="android:windowEnterAnimation">@anim/anim_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_out</item>
+    </style>
+
 </resources>
