@@ -17,11 +17,12 @@ import java.util.Map;
 
 import example.kizema.anton.testbusapp.app.BaseActivity;
 import example.kizema.anton.testbusapp.app.UIHelper;
+import example.kizema.anton.testbusapp.model.BusModel;
 
-public class MainActivity extends BaseActivity implements BasePopularOrNearUserFragment.OnPopularOrNearUserClick {
+public class MainActivity extends BaseActivity implements BusFragment.OnPopularOrNearUserClick {
 
-    private static final String TAB_POPULAR = "TAB_POPULAR";
-    private static final String TAB_NEAR = "TAB_NEAR";
+    private static final String TAB_ARRIVAL = "TAB_ARRIVAL";
+    private static final String TAB_DEPARTURE = "TAB_DEPARTURE";
 
 
     private FragmentTabHost tabHost;
@@ -45,8 +46,8 @@ public class MainActivity extends BaseActivity implements BasePopularOrNearUserF
         tabHost.getTabWidget().setStripEnabled(false);
         tabHost.getTabWidget().setShowDividers(LinearLayout.SHOW_DIVIDER_NONE);
 
-        View tab = createTab(R.string.arrival, TAB_POPULAR);
-        createTab(R.string.departure, TAB_NEAR);
+        View tab = createTab(R.string.arrival, TAB_ARRIVAL);
+        createTab(R.string.departure, TAB_DEPARTURE);
 
         tabHost.setOnTabChangedListener(new TabChangeListener(tab));
 
@@ -72,13 +73,13 @@ public class MainActivity extends BaseActivity implements BasePopularOrNearUserF
     }
 
     @Override
-    public void onPopularOrNearUserClick(String str) {
+    public void onPopularOrNearUserClick(BusModel model) {
 
     }
 
     private class SearchActivityViewPagerAdapter extends FragmentPagerAdapter {
 
-        private Map<BasePopularOrNearUserFragment.SearchType, BasePopularOrNearUserFragment> fragments;
+        private Map<BusFragment.Type, BusFragment> fragments;
 
         public SearchActivityViewPagerAdapter(FragmentManager fm) {
             super(fm);
@@ -90,18 +91,18 @@ public class MainActivity extends BaseActivity implements BasePopularOrNearUserF
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
-                    if (fragments.get(BasePopularOrNearUserFragment.SearchType.POPULAR) == null) {
-                        fragments.put(BasePopularOrNearUserFragment.SearchType.POPULAR,
-                                BasePopularOrNearUserFragment.newInstance());
+                    if (fragments.get(BusFragment.Type.ARRIVALS) == null) {
+                        fragments.put(BusFragment.Type.ARRIVALS,
+                                BusFragment.newInstance(BusFragment.Type.ARRIVALS));
                     }
-                    return fragments.get(BasePopularOrNearUserFragment.SearchType.POPULAR);
+                    return fragments.get(BusFragment.Type.ARRIVALS);
 
                 case 1:
-                    if (fragments.get(BasePopularOrNearUserFragment.SearchType.NEARBY) == null) {
-                        fragments.put(BasePopularOrNearUserFragment.SearchType.NEARBY,
-                                BasePopularOrNearUserFragment.newInstance());
+                    if (fragments.get(BusFragment.Type.DEPARTURES) == null) {
+                        fragments.put(BusFragment.Type.DEPARTURES,
+                                BusFragment.newInstance(BusFragment.Type.DEPARTURES));
                     }
-                    return fragments.get(BasePopularOrNearUserFragment.SearchType.NEARBY);
+                    return fragments.get(BusFragment.Type.DEPARTURES);
 
                 default:
                     return null;

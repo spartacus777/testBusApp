@@ -1,0 +1,41 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvId"
+        android:layout_width="0dp"
+        android:layout_weight="50"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/textColorDark"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:paddingRight="6dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="to"
+        android:textColor="@color/textColorLightDark"/>
+
+    <TextView
+        android:id="@+id/tvDirection"
+        android:layout_width="0dp"
+        android:layout_weight="160"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:textColor="@color/textColorDark"/>
+
+    <TextView
+        android:id="@+id/tvDeparture"
+        android:layout_width="0dp"
+        android:layout_weight="55"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/textColorDark"/>
+
+</LinearLayout>

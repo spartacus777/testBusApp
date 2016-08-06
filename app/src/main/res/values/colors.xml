@@ -7,6 +7,8 @@
     <color name="actionBarColor">#00c800</color>
     <color name="textColorDark">#56524c</color>
     <color name="textColorMenuDark">#908d86</color>
+    <color name="textColorLightDark">#cfcdca</color>
+
     <color name="colorStribe">#fca720</color>
     <color name="white">#fbfaf9</color>
 

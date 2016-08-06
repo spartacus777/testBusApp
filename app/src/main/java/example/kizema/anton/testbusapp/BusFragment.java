@@ -11,50 +11,53 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.List;
 
 import example.kizema.anton.testbusapp.control.Controller;
+import example.kizema.anton.testbusapp.model.BusModel;
 
-public class BasePopularOrNearUserFragment extends Fragment {
+public class BusFragment extends Fragment {
 
-    protected static final String TAG = BasePopularOrNearUserFragment.class.getSimpleName();
+    protected static final String TAG = BusFragment.class.getSimpleName();
+    protected static final String TYPE = "type";
 
     private OnPopularOrNearUserClick listener;
     private SwipeRefreshLayout swipeLayout;
-    private RecyclerView rvUsers;
+    private RecyclerView rvEntries;
     private BusRouteAdapter busAdapter;
-    private ViewGroup noPeopleNear;
+    private ViewGroup noEntries;
 
-    public enum SearchType{
-        POPULAR, NEARBY
+    private Type type;
+
+    public enum Type implements Serializable{
+        ARRIVALS, DEPARTURES
     }
 
     public interface OnPopularOrNearUserClick {
-        void onPopularOrNearUserClick(String str);
+        void onPopularOrNearUserClick(BusModel model);
     }
 
     public interface OnFinished{
         void onFinished();
     }
 
-    public static BasePopularOrNearUserFragment newInstance() {
-        BasePopularOrNearUserFragment fragment = new BasePopularOrNearUserFragment();
-//        Bundle bndl = new Bundle();
-//        bndl.putInt(CONTENT_HEIGTH, contentHeight);
-//        fragment.setArguments(bndl);
+    public static BusFragment newInstance(Type type) {
+        BusFragment fragment = new BusFragment();
+        Bundle bndl = new Bundle();
+        bndl.putSerializable(TYPE, type);
+        fragment.setArguments(bndl);
         return fragment;
     }
 
-    public BasePopularOrNearUserFragment() {}
+    public BusFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d("ANT", "onCreate this" + this);
+        type = (Type) getArguments().getSerializable(TYPE);
 
-        Log.d("ANT", "onCreate");
         setRetainInstance(true);
     }
 
@@ -75,7 +78,8 @@ public class BasePopularOrNearUserFragment extends Fragment {
 
     private void initViews(View parentView){
         swipeLayout = (SwipeRefreshLayout) parentView.findViewById(R.id.swipeContainer);
-//        swipeLayout.setColorSchemeColors(ColorManager.rose, ColorManager.violet);
+        swipeLayout.setColorSchemeColors(getResources().getColor(R.color.colorStribe),
+                getResources().getColor(R.color.textColorDark));
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -84,28 +88,36 @@ public class BasePopularOrNearUserFragment extends Fragment {
             }
         });
 
-        rvUsers = (RecyclerView) parentView.findViewById(R.id.rvUsers);
+        rvEntries = (RecyclerView) parentView.findViewById(R.id.rvUsers);
 
         LinearLayoutManager mChatLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
-        rvUsers.setLayoutManager(mChatLayoutManager);
+        rvEntries.setLayoutManager(mChatLayoutManager);
 
 
-        Controller.getInstance().getBusses();
+        List<BusModel> busModels;
 
-        List<String> demo = new ArrayList<>();
-        demo.add("buss stop 1");
-        demo.add("buss stop 2");
 
-        busAdapter = new BusRouteAdapter(demo);
+        switch (type){
+            case ARRIVALS:
+                busModels = BusModel.selectByArrivals(true);
+                break;
+            default:
+                busModels = BusModel.selectByArrivals(false);
+                break;
+        }
+
+        busAdapter = new BusRouteAdapter(busModels);
 
         busAdapter.setOnUserClickListener(new BusRouteAdapter.OnUserClickListener() {
             @Override
-            public void onUserClicked(String str) {
-                listener.onPopularOrNearUserClick(str);
+            public void onUserClicked(BusModel model) {
+                listener.onPopularOrNearUserClick(model);
             }
         });
-        rvUsers.setAdapter(busAdapter);
-        rvUsers.setHasFixedSize(true);
+        rvEntries.setAdapter(busAdapter);
+        rvEntries.setHasFixedSize(true);
+
+        Controller.getInstance().getBusses();
 
 //        noPeopleNear = (ViewGroup) parentView.findViewById(R.id.noPeopleNear);
 //        noPeopleNear.setVisibility(View.GONE);

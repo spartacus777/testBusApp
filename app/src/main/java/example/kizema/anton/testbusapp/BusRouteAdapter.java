@@ -1,24 +1,27 @@
 package example.kizema.anton.testbusapp;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.List;
 
-public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.UserViewHolder> {
+import example.kizema.anton.testbusapp.model.BusModel;
 
-    private List<String> itemText;
+public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.BusViewHolder> {
+
+    private List<BusModel> busModels;
 
     private OnUserClickListener onUserClickListener;
 
     public interface OnUserClickListener{
-        void onUserClicked(String str);
+        void onUserClicked(BusModel str);
     }
 
-    public BusRouteAdapter(List<String> users) {
-        this.itemText = users;
+    public BusRouteAdapter(List<BusModel> busModels) {
+        this.busModels = busModels;
     }
 
     public void update(){
@@ -34,37 +37,39 @@ public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.UserVi
 //        }
 //    }
 
-    public static class UserViewHolder extends RecyclerView.ViewHolder {
+    public static class BusViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView text;
+        public TextView tvId, tvDirection, tvDeparture;
 
-        public UserViewHolder(View itemView) {
+        public BusViewHolder(View itemView) {
             super(itemView);
 
-            text = (TextView) itemView;
+            tvId = (TextView) itemView.findViewById(R.id.tvId);
+            tvDirection = (TextView) itemView.findViewById(R.id.tvDirection);
+            tvDeparture = (TextView) itemView.findViewById(R.id.tvDeparture);
         }
     }
 
     @Override
-    public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        TextView image = new TextView(parent.getContext());
+    public BusViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View parentView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
 
-        image.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
-                RecyclerView.LayoutParams.WRAP_CONTENT));
-
-        return new UserViewHolder(image);
+        return new BusViewHolder(parentView);
     }
 
     @Override
-    public void onBindViewHolder(final UserViewHolder holder, final int position) {
+    public void onBindViewHolder(final BusViewHolder holder, final int position) {
 
-        holder.text.setText(itemText.get(position));
+        BusModel model = busModels.get(position);
+        holder.tvId.setText(model.id);
+        holder.tvDeparture.setText(""+model.timestamp);
+        holder.tvDirection.setText(model.direction);
 
-        holder.text.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onUserClickListener != null) {
-                    onUserClickListener.onUserClicked(itemText.get(holder.getAdapterPosition()));
+                    onUserClickListener.onUserClicked(busModels.get(holder.getAdapterPosition()));
                 }
             }
         });
@@ -72,20 +77,20 @@ public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.UserVi
 
     @Override
     public int getItemCount() {
-        if (itemText == null){
+        if (busModels == null){
             return 0;
         }
 
-        return itemText.size();
+        return busModels.size();
     }
 
     public void clear(){
-        itemText.clear();
+        busModels.clear();
         notifyDataSetChanged();
     }
 
     public boolean isEmpty(){
-        if (itemText == null || itemText.size() == 0) {
+        if (busModels == null || busModels.size() == 0) {
             return true;
         }
 

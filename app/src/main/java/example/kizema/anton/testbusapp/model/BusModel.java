@@ -5,6 +5,8 @@ import com.activeandroid.annotation.Column;
 import com.activeandroid.annotation.Table;
 import com.activeandroid.query.Select;
 
+import java.util.List;
+
 
 @Table(name = "BusModel")
 public class BusModel extends Model {
@@ -38,6 +40,10 @@ public class BusModel extends Model {
 
     public static BusModel selectById(String id){
         return new Select().from(BusModel.class).where(LINE_CODE + " = ?", id).executeSingle();
+    }
+
+    public static List<BusModel> selectByArrivals(boolean isArrivals){
+        return new Select().from(BusModel.class).where(ARRIVALS + " = ?", isArrivals).execute();
     }
 
     public static BusModel create(String id,
