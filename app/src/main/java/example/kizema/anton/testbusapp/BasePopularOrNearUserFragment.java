@@ -14,6 +14,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import example.kizema.anton.testbusapp.control.Controller;
+
 public class BasePopularOrNearUserFragment extends Fragment {
 
     protected static final String TAG = BasePopularOrNearUserFragment.class.getSimpleName();
@@ -87,6 +89,8 @@ public class BasePopularOrNearUserFragment extends Fragment {
         LinearLayoutManager mChatLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvUsers.setLayoutManager(mChatLayoutManager);
 
+
+        Controller.getInstance().getBusses();
 
         List<String> demo = new ArrayList<>();
         demo.add("buss stop 1");
