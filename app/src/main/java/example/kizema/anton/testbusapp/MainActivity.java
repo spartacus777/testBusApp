@@ -5,35 +5,36 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTabHost;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import example.kizema.anton.testbusapp.app.BaseActivity;
 import example.kizema.anton.testbusapp.app.UIHelper;
 import example.kizema.anton.testbusapp.control.Controller;
 import example.kizema.anton.testbusapp.model.BusModel;
 
-public class MainActivity extends BaseActivity implements BusFragment.OnPopularOrNearUserClick {
+public class MainActivity extends BaseActivity implements BusTabController.OnPopularOrNearUserClick {
 
     private static final String TAB_ARRIVAL = "TAB_ARRIVAL";
     private static final String TAB_DEPARTURE = "TAB_DEPARTURE";
-
+    private static final String RECREATED = "KK";
 
     private FragmentTabHost tabHost;
     private ViewPager viewPager;
-    private SearchActivityViewPagerAdapter appActivtyPagerAdapter;
+    private MyViewPagerAdapter appActivtyPagerAdapter;
     private BroadcastReceiver dataFetchedReceiver;
 
     private boolean firstStarted = true;
@@ -43,7 +44,7 @@ public class MainActivity extends BaseActivity implements BusFragment.OnPopularO
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (savedInstanceState != null && savedInstanceState.getBoolean("KK")){
+        if (savedInstanceState != null && savedInstanceState.getBoolean(RECREATED)){
             firstStarted = false;
         }
 
@@ -55,7 +56,7 @@ public class MainActivity extends BaseActivity implements BusFragment.OnPopularO
         dataFetchedReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                for (BusFragment f : appActivtyPagerAdapter.getAll()){
+                for (BusTabController f : appActivtyPagerAdapter.getAll()){
                     f.onUpdated();
                 }
             }
@@ -80,7 +81,7 @@ public class MainActivity extends BaseActivity implements BusFragment.OnPopularO
 
         tabHost.setOnTabChangedListener(new TabChangeListener(tab));
 
-        appActivtyPagerAdapter = new SearchActivityViewPagerAdapter(getSupportFragmentManager());
+        appActivtyPagerAdapter = new MyViewPagerAdapter(getApplicationContext());
         viewPager.setAdapter(appActivtyPagerAdapter);
         viewPager.setOffscreenPageLimit(2);
         viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -106,45 +107,67 @@ public class MainActivity extends BaseActivity implements BusFragment.OnPopularO
 
     }
 
-    private class SearchActivityViewPagerAdapter extends FragmentPagerAdapter {
+    private class MyViewPagerAdapter extends PagerAdapter {
 
-        private Map<BusFragment.Type, BusFragment> fragments;
+        private Context ctx;
+        private List<BusTabController> busTabControllers;
 
-        public SearchActivityViewPagerAdapter(FragmentManager fm) {
-            super(fm);
-
-            fragments = new HashMap<>();
-        }
-
-        public Collection<BusFragment> getAll(){
-            return fragments.values();
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    if (fragments.get(BusFragment.Type.ARRIVALS) == null) {
-                        fragments.put(BusFragment.Type.ARRIVALS,
-                                BusFragment.newInstance(BusFragment.Type.ARRIVALS, firstStarted));
-                    }
-                    return fragments.get(BusFragment.Type.ARRIVALS);
-
-                case 1:
-                    if (fragments.get(BusFragment.Type.DEPARTURES) == null) {
-                        fragments.put(BusFragment.Type.DEPARTURES,
-                                BusFragment.newInstance(BusFragment.Type.DEPARTURES, firstStarted));
-                    }
-                    return fragments.get(BusFragment.Type.DEPARTURES);
-
-                default:
-                    return null;
-            }
+        public MyViewPagerAdapter(Context ctx) {
+            this.ctx = ctx;
+            busTabControllers = new ArrayList<>();
         }
 
         @Override
         public int getCount() {
             return 2;
+        }
+
+        public List<BusTabController> getAll(){
+            return busTabControllers;
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup collection, int position) {
+            Log.d("TY", "Creating item at pos : " + position);
+
+            View view = LayoutInflater.from(ctx).inflate(R.layout.fragment_list, collection, false);
+            BusTabController bf = new BusTabController((position == 0 ? BusTabController.Type.ARRIVALS :
+                    BusTabController.Type.DEPARTURES), firstStarted, view);
+            bf.addListener(MainActivity.this);
+            busTabControllers.add(bf);
+
+            collection.addView(view);
+            return view;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+            busTabControllers.remove(position);
+
+            Log.d("TY", "removing item at pos : " + position);
+        }
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+
+        @Override
+        public Parcelable saveState() {
+            return null;
+        }
+
+        @Override
+        public void restoreState(Parcelable arg0, ClassLoader arg1) {
+        }
+
+        @Override
+        public void startUpdate(View arg0) {
+        }
+
+        @Override
+        public void finishUpdate(View arg0) {
         }
     }
 
@@ -178,6 +201,6 @@ public class MainActivity extends BaseActivity implements BusFragment.OnPopularO
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean("KK", true);
+        outState.putBoolean(RECREATED, true);
     }
 }

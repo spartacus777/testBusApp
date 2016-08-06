@@ -31,6 +31,8 @@ public class Controller {
     private Controller(){}
 
     public void getBusses(){
+        Log.v("rr", "getBusses() request");
+
         HttpHelper.getInstance().getAsync(ApiHelper.URL_HOST + ApiHelper.URL_GET_BUSSES,
                 new Callback() {
                     @Override
@@ -44,7 +46,7 @@ public class Controller {
 
                         List<BusModel> busModels = JsonHelper.getInstance().parse(body);
                         for (BusModel m : busModels){
-                            Log.d("rr", "MODEL : " + m.string());
+//                            Log.d("rr", "MODEL : " + m.string());
                         }
 
                         Intent intent = new Intent();
