@@ -28,6 +28,7 @@ public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.BusVie
 
     public BusRouteAdapter(List<BusModel> busModels) {
         this.busModels = busModels;
+        notifyDataSetChanged();
     }
 
     public void update(List<BusModel> busModels){
@@ -139,7 +140,6 @@ public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.BusVie
         });
 
         if (holder instanceof BusDividerViewHolder){
-            //set devider time
             ((BusDividerViewHolder) holder).tvTime.setText(getTime(model.timestamp * 1000));
         }
     }

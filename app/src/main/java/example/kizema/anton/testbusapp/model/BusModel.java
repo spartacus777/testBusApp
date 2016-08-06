@@ -61,9 +61,9 @@ public class BusModel extends Model {
         if (busModel == null){
             busModel = new BusModel();
             busModel.lineId = id;
+            busModel.isArrivals = isArrival;
         }
 
-        busModel.isArrivals = isArrival;
         busModel.direction = direction;
         busModel.timestamp = timestamp;
         busModel.timezone = timezone;
@@ -80,10 +80,7 @@ public class BusModel extends Model {
     }
 
     public void saveSafe(){
-        try {
-            save();
-        } catch (Throwable e){
-        }
+        save();
     }
 
 }

@@ -147,7 +147,7 @@ public class MainActivity extends BaseActivity implements BusTabController.OnBus
 
             View view = LayoutInflater.from(ctx).inflate(R.layout.fragment_list, collection, false);
             BusTabController bf = new BusTabController((position == 0 ? BusTabController.Type.ARRIVALS :
-                    BusTabController.Type.DEPARTURES), firstStarted, view, MainActivity.this);
+                    BusTabController.Type.DEPARTURES), view, MainActivity.this);
 
             busTabControllers.add(bf);
 
