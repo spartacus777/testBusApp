@@ -1,5 +1,9 @@
 package example.kizema.anton.testbusapp;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,11 +16,13 @@ import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import example.kizema.anton.testbusapp.app.BaseActivity;
 import example.kizema.anton.testbusapp.app.UIHelper;
+import example.kizema.anton.testbusapp.control.Controller;
 import example.kizema.anton.testbusapp.model.BusModel;
 
 public class MainActivity extends BaseActivity implements BusFragment.OnPopularOrNearUserClick {
@@ -28,13 +34,36 @@ public class MainActivity extends BaseActivity implements BusFragment.OnPopularO
     private FragmentTabHost tabHost;
     private ViewPager viewPager;
     private SearchActivityViewPagerAdapter appActivtyPagerAdapter;
+    private BroadcastReceiver dataFetchedReceiver;
+
+    private boolean firstStarted = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (savedInstanceState != null && savedInstanceState.getBoolean("KK")){
+            firstStarted = false;
+        }
+
         init();
+        registerReceiver();
+    }
+
+    private void registerReceiver(){
+        dataFetchedReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                for (BusFragment f : appActivtyPagerAdapter.getAll()){
+                    f.onUpdated();
+                }
+            }
+        };
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Controller.FETCH_ACTION);
+        registerReceiver(dataFetchedReceiver, intentFilter, null, null);
     }
 
     private void init(){
@@ -87,20 +116,24 @@ public class MainActivity extends BaseActivity implements BusFragment.OnPopularO
             fragments = new HashMap<>();
         }
 
+        public Collection<BusFragment> getAll(){
+            return fragments.values();
+        }
+
         @Override
         public Fragment getItem(int position) {
             switch (position) {
                 case 0:
                     if (fragments.get(BusFragment.Type.ARRIVALS) == null) {
                         fragments.put(BusFragment.Type.ARRIVALS,
-                                BusFragment.newInstance(BusFragment.Type.ARRIVALS));
+                                BusFragment.newInstance(BusFragment.Type.ARRIVALS, firstStarted));
                     }
                     return fragments.get(BusFragment.Type.ARRIVALS);
 
                 case 1:
                     if (fragments.get(BusFragment.Type.DEPARTURES) == null) {
                         fragments.put(BusFragment.Type.DEPARTURES,
-                                BusFragment.newInstance(BusFragment.Type.DEPARTURES));
+                                BusFragment.newInstance(BusFragment.Type.DEPARTURES, firstStarted));
                     }
                     return fragments.get(BusFragment.Type.DEPARTURES);
 
@@ -134,5 +167,17 @@ public class MainActivity extends BaseActivity implements BusFragment.OnPopularO
 
             viewPager.setCurrentItem(tabHost.getCurrentTab());
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(dataFetchedReceiver);
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("KK", true);
     }
 }

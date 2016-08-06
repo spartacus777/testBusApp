@@ -19,8 +19,8 @@ public class BusModel extends Model {
     public static final String TZ = "tz";
 
 
-    @Column(name = LINE_CODE, unique = true, onUniqueConflict = Column.ConflictAction.REPLACE)
-    public String id;
+    @Column(name = LINE_CODE)
+    public String lineId;
 
     @Column(name = ARRIVALS)
     public boolean isArrivals;
@@ -38,8 +38,9 @@ public class BusModel extends Model {
     public String through;
 
 
-    public static BusModel selectById(String id){
-        return new Select().from(BusModel.class).where(LINE_CODE + " = ?", id).executeSingle();
+    public static BusModel selectById(String id, boolean isArrivals){
+        return new Select().from(BusModel.class).where(LINE_CODE + " = ?", id)
+                .where(ARRIVALS + " = ?", isArrivals).executeSingle();
     }
 
     public static List<BusModel> selectByArrivals(boolean isArrivals){
@@ -53,25 +54,25 @@ public class BusModel extends Model {
                                   String timezone,
                                   String through){
 
-        BusModel notif = selectById(id);
-        if (notif == null){
-            notif = new BusModel();
-            notif.id = id;
+        BusModel busModel = selectById(id, isArrival);
+        if (busModel == null){
+            busModel = new BusModel();
+            busModel.lineId = id;
         }
 
-        notif.isArrivals = isArrival;
-        notif.direction = direction;
-        notif.timestamp = timestamp;
-        notif.timezone = timezone;
-        notif.through = through;
+        busModel.isArrivals = isArrival;
+        busModel.direction = direction;
+        busModel.timestamp = timestamp;
+        busModel.timezone = timezone;
+        busModel.through = through;
 
-        notif.saveSafe();
+        busModel.saveSafe();
 
-        return notif;
+        return busModel;
     }
 
     public String string(){
-        return  "ID:" + id + " ARRIVALS:"+isArrivals+" DIRECTION:"+direction+ " THROUGH_THE_STATIONS:"+through+
+        return  "ID:" + lineId + " ARRIVALS:"+isArrivals+" DIRECTION:"+direction+ " THROUGH_THE_STATIONS:"+through+
         "TIMESTAMP:"+timestamp+" TZ:"+timezone;
     }
 

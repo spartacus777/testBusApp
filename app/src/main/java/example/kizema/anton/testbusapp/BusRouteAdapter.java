@@ -24,7 +24,8 @@ public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.BusVie
         this.busModels = busModels;
     }
 
-    public void update(){
+    public void update(List<BusModel> busModels){
+        this.busModels = busModels;
         notifyDataSetChanged();
     }
 
@@ -61,7 +62,7 @@ public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.BusVie
     public void onBindViewHolder(final BusViewHolder holder, final int position) {
 
         BusModel model = busModels.get(position);
-        holder.tvId.setText(model.id);
+        holder.tvId.setText(model.lineId);
         holder.tvDeparture.setText(""+model.timestamp);
         holder.tvDirection.setText(model.direction);
 

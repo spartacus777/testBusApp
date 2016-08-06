@@ -21,6 +21,7 @@ public class BusFragment extends Fragment {
 
     protected static final String TAG = BusFragment.class.getSimpleName();
     protected static final String TYPE = "type";
+    protected static final String UPDATE = "UPDATE";
 
     private OnPopularOrNearUserClick listener;
     private SwipeRefreshLayout swipeLayout;
@@ -29,6 +30,7 @@ public class BusFragment extends Fragment {
     private ViewGroup noEntries;
 
     private Type type;
+    private boolean isFirstStarted;
 
     public enum Type implements Serializable{
         ARRIVALS, DEPARTURES
@@ -42,10 +44,11 @@ public class BusFragment extends Fragment {
         void onFinished();
     }
 
-    public static BusFragment newInstance(Type type) {
+    public static BusFragment newInstance(Type type, boolean firstStarted) {
         BusFragment fragment = new BusFragment();
         Bundle bndl = new Bundle();
         bndl.putSerializable(TYPE, type);
+        bndl.putBoolean(UPDATE, firstStarted);
         fragment.setArguments(bndl);
         return fragment;
     }
@@ -57,6 +60,7 @@ public class BusFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         type = (Type) getArguments().getSerializable(TYPE);
+        isFirstStarted = getArguments().getBoolean(UPDATE);
 
         setRetainInstance(true);
     }
@@ -83,8 +87,7 @@ public class BusFragment extends Fragment {
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                //TODO
-//                update();
+                BusFragment.this.update();
             }
         });
 
@@ -93,20 +96,7 @@ public class BusFragment extends Fragment {
         LinearLayoutManager mChatLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvEntries.setLayoutManager(mChatLayoutManager);
 
-
-        List<BusModel> busModels;
-
-
-        switch (type){
-            case ARRIVALS:
-                busModels = BusModel.selectByArrivals(true);
-                break;
-            default:
-                busModels = BusModel.selectByArrivals(false);
-                break;
-        }
-
-        busAdapter = new BusRouteAdapter(busModels);
+        busAdapter = new BusRouteAdapter(getFromDb());
 
         busAdapter.setOnUserClickListener(new BusRouteAdapter.OnUserClickListener() {
             @Override
@@ -117,12 +107,35 @@ public class BusFragment extends Fragment {
         rvEntries.setAdapter(busAdapter);
         rvEntries.setHasFixedSize(true);
 
-        Controller.getInstance().getBusses();
-
+        if (isFirstStarted) {
+            update();
+        }
 //        noPeopleNear = (ViewGroup) parentView.findViewById(R.id.noPeopleNear);
 //        noPeopleNear.setVisibility(View.GONE);
     }
 
+    private List<BusModel> getFromDb(){
+        List<BusModel> busModels;
+        switch (type){
+            case ARRIVALS:
+                busModels = BusModel.selectByArrivals(true);
+                break;
+            default:
+                busModels = BusModel.selectByArrivals(false);
+                break;
+        }
+
+        return busModels;
+    }
+
+    public void update(){
+        swipeLayout.setRefreshing(true);
+        Controller.getInstance().getBusses();
+    }
+
+    public void onUpdated(){
+        busAdapter.update(getFromDb());
+    }
 
     @Override
     public void onAttach(Activity activity) {

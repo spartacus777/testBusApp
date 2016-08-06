@@ -1,5 +1,6 @@
 package example.kizema.anton.testbusapp.control;
 
+import android.content.Intent;
 import android.util.Log;
 
 import com.squareup.okhttp.Callback;
@@ -9,13 +10,13 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import java.util.List;
 
+import example.kizema.anton.testbusapp.app.App;
 import example.kizema.anton.testbusapp.helpers.JsonHelper;
 import example.kizema.anton.testbusapp.model.BusModel;
 
-/**
- * Created by somename on 06.08.2016.
- */
 public class Controller {
+
+    public static final String FETCH_ACTION = "FETCH_ACTION";
 
     private static Controller instance;
 
@@ -45,6 +46,10 @@ public class Controller {
                         for (BusModel m : busModels){
                             Log.d("rr", "MODEL : " + m.string());
                         }
+
+                        Intent intent = new Intent();
+                        intent.setAction(FETCH_ACTION);
+                        App.getAppContext().sendOrderedBroadcast(intent, null);
                     }
                 });
     }
