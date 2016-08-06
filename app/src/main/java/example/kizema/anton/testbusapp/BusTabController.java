@@ -66,7 +66,6 @@ public class BusTabController {
         });
         rvEntries.setAdapter(busAdapter);
         rvEntries.setHasFixedSize(true);
-
     }
 
     private List<BusModel> getFromDb() {
