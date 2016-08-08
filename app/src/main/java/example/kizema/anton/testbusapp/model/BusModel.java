@@ -15,7 +15,7 @@ public class BusModel extends Model {
     public static final String LINE_CODE = "line_code";
     public static final String DIRECTION = "direction";
     public static final String THROUGH_THE_STATIONS = "through_the_stations";
-    public static final String TIMESTAMP = "timestamp";
+    public static final String TIMESTAMP = "timestamper";
     public static final String TZ = "tz";
 
 
@@ -69,7 +69,7 @@ public class BusModel extends Model {
         busModel.timezone = timezone;
         busModel.through = through;
 
-        busModel.saveSafe();
+        busModel.save();
 
         return busModel;
     }
@@ -77,10 +77,6 @@ public class BusModel extends Model {
     public String string(){
         return  "ID:" + lineId + " ARRIVALS:"+isArrivals+" DIRECTION:"+direction+ " THROUGH_THE_STATIONS:"+through+
         "TIMESTAMP:"+timestamp+" TZ:"+timezone;
-    }
-
-    public void saveSafe(){
-        save();
     }
 
 }

@@ -108,7 +108,7 @@ public class MainActivity extends BaseActivity implements BusTabController.OnBus
     }
 
     @Override
-    public void onPopularOrNearUserClick(BusModel model) {
+    public void onBusRouteClick(BusModel model) {
         DetailsDialog dlg = new DetailsDialog(MainActivity.this, model.lineId, model.isArrivals);
         dlg.show();
     }

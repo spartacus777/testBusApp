@@ -28,7 +28,7 @@ public class BusTabController {
     }
 
     public interface OnBusTabCallback {
-        void onPopularOrNearUserClick(BusModel model);
+        void onBusRouteClick(BusModel model);
         void onFetchData();
     }
 
@@ -61,7 +61,7 @@ public class BusTabController {
         busAdapter.setOnUserClickListener(new BusRouteAdapter.OnUserClickListener() {
             @Override
             public void onUserClicked(BusModel model) {
-                listener.onPopularOrNearUserClick(model);
+                listener.onBusRouteClick(model);
             }
         });
         rvEntries.setAdapter(busAdapter);
