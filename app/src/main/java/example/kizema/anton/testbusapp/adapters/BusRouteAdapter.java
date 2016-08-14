@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import example.kizema.anton.testbusapp.R;
 import example.kizema.anton.testbusapp.model.BusModel;
@@ -23,7 +24,7 @@ public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.BusVie
     private OnUserClickListener onUserClickListener;
 
     public interface OnUserClickListener{
-        void onUserClicked(BusModel str);
+        void onRouteCLick(BusModel str);
     }
 
     public BusRouteAdapter(List<BusModel> busModels) {
@@ -46,8 +47,8 @@ public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.BusVie
         BusModel model = busModels.get(position);
         BusModel prevModel = busModels.get(position-1);
 
-        String prevModelTime = getTime(prevModel.timestamp * 1000);
-        String modelTime = getTime(model.timestamp * 1000);
+        String prevModelTime = getTime(prevModel.timestamp * 1000, prevModel.timezone);
+        String modelTime = getTime(model.timestamp * 1000, model.timezone);
 
         if (modelTime.equalsIgnoreCase(prevModelTime)){
             return TYPE_ITEM;
@@ -101,15 +102,17 @@ public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.BusVie
         return null;
     }
 
-    private String getTime(long timestamp){
+    private String getTime(long timestamp, String tz){
         Calendar cl = Calendar.getInstance();
+        cl.setTimeZone(TimeZone.getTimeZone(tz));
         cl.setTimeInMillis(timestamp);
         return format(cl.get(Calendar.DAY_OF_MONTH)) + ":" + format(cl.get(Calendar.MONTH) + 1) + ":" +
                 cl.get(Calendar.YEAR);
     }
 
-    private String getTimeHours(long timestamp){
+    private String getTimeHours(long timestamp, String tz){
         Calendar cl = Calendar.getInstance();
+        cl.setTimeZone(TimeZone.getTimeZone(tz));
         cl.setTimeInMillis(timestamp);
         return format(cl.get(Calendar.HOUR_OF_DAY)) + ":" + format(cl.get(Calendar.MINUTE));
     }
@@ -118,8 +121,9 @@ public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.BusVie
         if (c < 10){
             return "0"+c;
         }
-
         return ""+c;
+
+
     }
 
     @Override
@@ -127,20 +131,20 @@ public class BusRouteAdapter extends RecyclerView.Adapter<BusRouteAdapter.BusVie
 
         BusModel model = busModels.get(position);
         holder.tvId.setText(model.lineId);
-        holder.tvDeparture.setText(getTimeHours(model.timestamp * 1000));
+        holder.tvDeparture.setText(getTimeHours(model.timestamp * 1000, model.timezone));
         holder.tvDirection.setText(model.direction);
 
         holder.parentItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onUserClickListener != null) {
-                    onUserClickListener.onUserClicked(busModels.get(holder.getAdapterPosition()));
+                    onUserClickListener.onRouteCLick(busModels.get(holder.getAdapterPosition()));
                 }
             }
         });
 
         if (holder instanceof BusDividerViewHolder){
-            ((BusDividerViewHolder) holder).tvTime.setText(getTime(model.timestamp * 1000));
+            ((BusDividerViewHolder) holder).tvTime.setText(getTime(model.timestamp * 1000, model.timezone));
         }
     }
 

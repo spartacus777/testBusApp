@@ -1,10 +1,15 @@
 package example.kizema.anton.testbusapp;
 
+import android.app.Activity;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import java.io.Serializable;
 import java.util.List;
@@ -12,7 +17,7 @@ import java.util.List;
 import example.kizema.anton.testbusapp.adapters.BusRouteAdapter;
 import example.kizema.anton.testbusapp.model.BusModel;
 
-public class BusTabController {
+public class BusTabController extends Fragment {
 
     protected static final String TAG = BusTabController.class.getSimpleName();
 
@@ -32,14 +37,64 @@ public class BusTabController {
         void onFetchData();
     }
 
-    public BusTabController(Type type, final View parentView, OnBusTabCallback listener) {
-        this.type = type;
-        this.listener = listener;
+    public static BusTabController newInstance(Type type){
+        BusTabController c = new BusTabController();
+        Bundle b = new Bundle();
+        b.putInt("A", type.ordinal());
+        c.setArguments(b);
 
-        initViews(parentView);
+        Log.d("FF", "newInstance " + c);
+
+        return c;
+    }
+
+    public BusTabController(){}
+
+//    public BusTabController(Type type, final View parentView, OnBusTabCallback listener) {
+//        this.type = type;
+//        this.listener = listener;
+//
+//        initViews(parentView);
+//    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d("FF", "onCreate " + this);
+
+        int arg = getArguments().getInt("A", 0);
+        type = Type.values()[arg];
+        setRetainInstance(false);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d("FF", "onCreateView " + this);
+
+        View parent = inflater.inflate(R.layout.fragment_list, container, false);
+        initViews(parent);
+        return parent;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            listener = (OnBusTabCallback) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnBusTabCallback");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        listener = null;
     }
 
     private void initViews(View parentView) {
+        Log.d("FF", "initViews " + this);
+
         swipeLayout = (SwipeRefreshLayout) parentView.findViewById(R.id.swipeContainer);
         swipeLayout.setColorSchemeColors(parentView.getResources().getColor(R.color.colorStribe),
                 parentView.getResources().getColor(R.color.textColorDark));
@@ -60,7 +115,7 @@ public class BusTabController {
 
         busAdapter.setOnUserClickListener(new BusRouteAdapter.OnUserClickListener() {
             @Override
-            public void onUserClicked(BusModel model) {
+            public void onRouteCLick(BusModel model) {
                 listener.onBusRouteClick(model);
             }
         });
@@ -85,6 +140,10 @@ public class BusTabController {
         busAdapter.update(getFromDb());
         swipeLayout.setRefreshing(false);
         Log.v("rr", "getBusses() onUpdated");
+    }
+
+    public void logSmth(){
+        Log.e("rr", "info received!");
     }
 
 }
