@@ -17,9 +17,9 @@ import java.util.List;
 import example.kizema.anton.testbusapp.adapters.BusRouteAdapter;
 import example.kizema.anton.testbusapp.model.BusModel;
 
-public class BusTabController extends Fragment {
+public class BusTabFragment extends Fragment {
 
-    protected static final String TAG = BusTabController.class.getSimpleName();
+    protected static final String TAG = BusTabFragment.class.getSimpleName();
 
     private OnBusTabCallback listener;
     private SwipeRefreshLayout swipeLayout;
@@ -37,8 +37,8 @@ public class BusTabController extends Fragment {
         void onFetchData();
     }
 
-    public static BusTabController newInstance(Type type){
-        BusTabController c = new BusTabController();
+    public static BusTabFragment newInstance(Type type){
+        BusTabFragment c = new BusTabFragment();
         Bundle b = new Bundle();
         b.putInt("A", type.ordinal());
         c.setArguments(b);
@@ -48,14 +48,7 @@ public class BusTabController extends Fragment {
         return c;
     }
 
-    public BusTabController(){}
-
-//    public BusTabController(Type type, final View parentView, OnBusTabCallback listener) {
-//        this.type = type;
-//        this.listener = listener;
-//
-//        initViews(parentView);
-//    }
+    public BusTabFragment(){}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,7 +94,7 @@ public class BusTabController extends Fragment {
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                BusTabController.this.update();
+                BusTabFragment.this.update();
             }
         });
 

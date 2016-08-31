@@ -27,7 +27,7 @@ import example.kizema.anton.testbusapp.control.Controller;
 import example.kizema.anton.testbusapp.helpers.DetailsDialog;
 import example.kizema.anton.testbusapp.model.BusModel;
 
-public class MainActivity extends BaseActivity implements BusTabController.OnBusTabCallback {
+public class MainActivity extends BaseActivity implements BusTabFragment.OnBusTabCallback {
 
     private static final String TAB_ARRIVAL = "TAB_ARRIVAL";
     private static final String TAB_DEPARTURE = "TAB_DEPARTURE";
@@ -58,7 +58,7 @@ public class MainActivity extends BaseActivity implements BusTabController.OnBus
             @Override
             public void onReceive(Context context, Intent intent) {
                 for (Fragment f : appActivtyPagerAdapter.getRegisteredFragments()){
-                    ((BusTabController)f).onUpdated();
+                    ((BusTabFragment)f).onUpdated();
                 }
             }
         };
@@ -86,7 +86,7 @@ public class MainActivity extends BaseActivity implements BusTabController.OnBus
 
         if (!firstStarted){
             for (Fragment f : appActivtyPagerAdapter.getRegisteredFragments()){
-                ((BusTabController)f).logSmth();
+                ((BusTabFragment)f).logSmth();
             }
         }
 
@@ -125,7 +125,7 @@ public class MainActivity extends BaseActivity implements BusTabController.OnBus
         Controller.getInstance().getBusses();
 
         for (Fragment f : appActivtyPagerAdapter.getRegisteredFragments()){
-            ((BusTabController)f).setRefreshing();
+            ((BusTabFragment)f).setRefreshing();
         }
     }
 
@@ -150,27 +150,10 @@ public class MainActivity extends BaseActivity implements BusTabController.OnBus
         @Override
         public Fragment getItem(int position) {
             Log.e("rr", "getItem");
-            BusTabController inst = BusTabController.newInstance((position == 0 ? BusTabController.Type.ARRIVALS :
-                    BusTabController.Type.DEPARTURES));
+            BusTabFragment inst = BusTabFragment.newInstance((position == 0 ? BusTabFragment.Type.ARRIVALS :
+                    BusTabFragment.Type.DEPARTURES));
             return inst;
         }
-
-//        @Override
-//        public Object instantiateItem(ViewGroup collection, int position) {
-//            Log.d("TY", "Creating item at pos : " + position);
-//
-//            View view = LayoutInflater.from(ctx).inflate(R.layout.fragment_list, collection, false);
-//            BusTabController bf = BusTabController.newInstance((position == 0 ? BusTabController.Type.ARRIVALS :
-//                    BusTabController.Type.DEPARTURES));
-//
-////            BusTabController bf = new BusTabController((position == 0 ? BusTabController.Type.ARRIVALS :
-////                    BusTabController.Type.DEPARTURES), view, MainActivity.this);
-//
-//            busTabControllers.add(bf);
-//
-//            collection.addView(view);
-//            return view;
-//        }
 
         // Register the fragment when the item is instantiated
         @Override
